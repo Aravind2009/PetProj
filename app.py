@@ -1,4 +1,4 @@
-"""Aerodynamics Explorer — an offline, simplified educational Streamlit app."""
+"""Aerodynamics Explorer"""
 import difflib
 import math
 import os
