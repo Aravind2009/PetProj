@@ -1,4 +1,4 @@
-"""Aerodynamics Explorer"""
+"""Aerodynamics Explorer — an offline, simplified educational Streamlit app."""
 import difflib
 import math
 import os
@@ -206,18 +206,17 @@ def topic_card(topic, level):
 
 st.markdown("""<style>
 .block-container {max-width: 1400px; padding-top: 1.6rem; padding-bottom: 3rem;}
-[data-testid="stSidebar"] {background: linear-gradient(180deg,#F2FAFF 0%,#FFFFFF 100%);}
-h1,h2,h3 {color:#102A43;} .hero {padding:1.65rem 2rem; border-radius:18px; background:linear-gradient(115deg,#102A43,#1677B8); color:white; margin-bottom:1.25rem; box-shadow:0 10px 30px #102a4320;}
+[data-testid="stSidebar"] {background:var(--background-color);}
+h1,h2,h3 {color:var(--text-color);} .hero {padding:1.65rem 2rem; border-radius:18px; background:linear-gradient(115deg,#102A43,#1677B8); color:white; margin-bottom:1.25rem; box-shadow:0 10px 30px #102a4320;}
 .hero h1 {color:white; margin:0;} .hero p {margin:.35rem 0 0; color:#DFF3FF; font-size:1.08rem;}
-.stButton>button {border-radius:9px; border:1px solid #B9DFF2; color:#102A43; font-weight:600;}
-[data-testid="stMetric"] {background:#F7FBFD; border:1px solid #DDECF3; border-radius:12px; padding:.6rem;}
+.stButton>button {border-radius:9px; border:1px solid #B9DFF2; color:var(--text-color); font-weight:600;}
+[data-testid="stMetric"] {background:transparent; border:1px solid #B9DFF2; border-radius:12px; padding:.6rem;}
 </style>""", unsafe_allow_html=True)
 
 for key, default in {"search": "", "topic": None, "reset_nonce": 0}.items(): st.session_state.setdefault(key, default)
 
 with st.sidebar:
     st.title("✈️ Flight desk")
-    st.caption("An offline, simplified visual learning tool.")
     level = st.radio("Explanation level", ["beginner", "intermediate", "advanced"], format_func=str.title, help="Changes the depth of written explanations.")
     st.divider(); st.subheader("Quick topics")
     for name, item in TOPICS.items():
@@ -315,13 +314,10 @@ with reference_tab:
 with ask_tab:
     st.subheader("💬 Explain any concept")
     api_ready = bool(GEMINI_API_KEY) and genai is not None
-    if api_ready:
-        st.success("✨ AI mode is ready. Your key is read securely from the environment; it is never shown in this app.")
-    elif GEMINI_API_KEY and genai is None:
+    if GEMINI_API_KEY and genai is None:
         st.warning("A Gemini API key was found, but the google-genai package is not installed. Run: `py -m pip install -r requirements.txt`")
-    else:
-        st.caption("Offline mode: add `GEMINI_API_KEY` to enable AI answers for topics beyond the built-in reference.")
-    question=st.text_input("Your topic or question",placeholder="Why does a wing stall? What is Mach number?")
+    elif not api_ready:
+        st.caption("Offline mode: add `GEMINI_API_KEY` to enable AI answers for topics beyond the built-in reference.")    question=st.text_input("Your topic or question",placeholder="Why does a wing stall? What is Mach number?")
     if st.button("Get explanation",key="ask"):
         if not question.strip():
             st.warning("Enter a topic or question first.")
@@ -346,4 +342,3 @@ with ask_tab:
                 topic_card(topic,level)
                 st.caption("Try next: use the Flight lab for lift, drag, or stall; use Flow lab for Reynolds number and boundary layers.")
             else: st.warning("That topic is not yet in the built-in knowledge base. Add an API key for an AI answer, or try lift, drag, Bernoulli, angle of attack, stall, boundary layer, Reynolds number, wingtip vortices, controls, or Mach number.")
-    st.caption("Offline fallback remains available. AI mode sends only the question you submit to the API.")
