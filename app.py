@@ -317,7 +317,8 @@ with ask_tab:
     if GEMINI_API_KEY and genai is None:
         st.warning("A Gemini API key was found, but the google-genai package is not installed. Run: `py -m pip install -r requirements.txt`")
     elif not api_ready:
-        st.caption("Offline mode: add `GEMINI_API_KEY` to enable AI answers for topics beyond the built-in reference.")    question=st.text_input("Your topic or question",placeholder="Why does a wing stall? What is Mach number?")
+        st.caption("Offline mode: add `GEMINI_API_KEY` to enable AI answers for topics beyond the built-in reference.")
+    question=st.text_input("Your topic or question",placeholder="Why does a wing stall? What is Mach number?")
     if st.button("Get explanation",key="ask"):
         if not question.strip():
             st.warning("Enter a topic or question first.")
